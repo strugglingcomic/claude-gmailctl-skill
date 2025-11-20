@@ -1,4 +1,4 @@
-# Claude Gmail Control Skill
+# claude-gmailctl-skill
 
 A Claude Code skill for managing Gmail filters and labels using [`gmailctl`](https://github.com/mbrt/gmailctl) to achieve and maintain Inbox Zero through automated email triage.
 
@@ -58,42 +58,72 @@ Invoke this skill when you need help with:
 
 ```
 claude-gmailctl-skill/
-├── SKILL.md                           # Main skill prompt
+├── SKILL.md                           # Main skill prompt (component-based)
 ├── README.md                          # This file
 ├── SETUP.md                           # Detailed setup guide
 ├── assets/
 │   └── templates/                     # Configuration templates
 │       ├── basic-config.jsonnet       # Simple Inbox Zero setup
 │       └── advanced-config.jsonnet    # Advanced patterns
-├── references/                        # Detailed documentation (loaded as needed)
-│   ├── gmailctl-syntax.md            # Complete syntax reference
-│   ├── inbox-zero.md                 # Inbox Zero methodology
-│   └── troubleshooting.md            # Error solutions
+├── references/                        # [DEPRECATED] Use WebFetch for live docs
+│   ├── README.md                     # Deprecation notice and migration guide
+│   ├── gmailctl-syntax.md            # [Deprecated] Use WebFetch instead
+│   ├── inbox-zero.md                 # [Deprecated] Use WebFetch instead
+│   └── troubleshooting.md            # [Deprecated] Use WebFetch instead
 └── scripts/                          # Helper utilities
     ├── validate_config.sh            # Validate before applying
     └── backup_config.sh              # Backup configuration
 ```
 
+### Component-Based Structure
+
+The skill is organized into 6 distinct components:
+
+1. **Setup & Initialization** - Installing gmailctl and Gmail authentication
+2. **Assessment** - Analyzing existing filters, labels, and email patterns
+3. **Filter Design** - Creating and validating filter rules
+4. **Deployment** - Applying changes with deployment mode choice (overwrite vs. additive)
+5. **Simple Features** - Basic Gmail operators and actions (quick reference)
+6. **Advanced Features** - Jsonnet programming and complex patterns (uses live WebFetch)
+
 ## How It Works
 
-1. **Understand patterns**: Claude asks about your email workflow
-2. **Design filters**: Creates Jsonnet configuration with Gmail search operators
-3. **Validate**: Tests syntax and previews changes with `gmailctl diff`
-4. **Apply safely**: Waits for your approval before applying to Gmail
-5. **Iterate**: Refines based on actual email behavior
+The skill guides you through a structured workflow:
+
+1. **Setup & Initialize** (Component 1): Install gmailctl and authenticate with Gmail
+2. **Assess** (Component 2): Analyze existing filters, labels, and email patterns
+3. **Design** (Component 3): Create filter rules using Gmail search operators
+4. **Validate**: Test syntax and preview changes with `gmailctl diff`
+5. **Deploy** (Component 4): Choose deployment mode (overwrite or additive) and apply
+6. **Iterate**: Refine based on actual email behavior
+
+Claude automatically selects the appropriate component based on your needs.
 
 ## Key Features
 
+### Granular Component Architecture
+
+- **Component 1-4**: Setup → Assessment → Design → Deployment (complete workflow)
+- **Component 5**: Simple features (basic operators, quick reference)
+- **Component 6**: Advanced features (uses live WebFetch for up-to-date docs)
+
+### No Documentation Duplication
+
+- **Simple features**: Built into skill for quick reference
+- **Advanced features**: Fetched live from https://github.com/mbrt/gmailctl
+- **Always current**: No stale documentation or version drift
+
 ### Progressive Disclosure
 
-- **SKILL.md**: Core workflow and common patterns (~3k words)
-- **references/**: Detailed docs loaded as needed (syntax, methodology, troubleshooting)
+- **SKILL.md**: Component-based workflow and patterns (~790 lines)
+- **references/**: [DEPRECATED] Replaced with WebFetch for live docs
 - **assets/templates/**: Reusable configuration examples
 - **scripts/**: Validation and backup utilities
 
 ### Safety Protocols
 
 - Always previews changes with `gmailctl diff` before applying
+- Asks user to choose deployment mode (overwrite vs. additive)
 - Never uses destructive actions (`delete`, `markSpam`) without explicit confirmation
 - Includes backup script for configuration safety
 - Tests queries in Gmail search bar before adding to filters
@@ -137,11 +167,12 @@ claude-gmailctl-skill/
 ## Resources
 
 ### Documentation
-- **[SKILL.md](SKILL.md)**: Main skill instructions for Claude
+- **[SKILL.md](SKILL.md)**: Main skill instructions for Claude (component-based)
 - **[SETUP.md](SETUP.md)**: Complete setup and troubleshooting guide
-- **[references/gmailctl-syntax.md](references/gmailctl-syntax.md)**: Comprehensive syntax reference
-- **[references/inbox-zero.md](references/inbox-zero.md)**: Inbox Zero methodology and patterns
-- **[references/troubleshooting.md](references/troubleshooting.md)**: Detailed error solutions
+- **[references/README.md](references/README.md)**: Deprecation notice for reference docs
+- ~~references/gmailctl-syntax.md~~ - [DEPRECATED] Use WebFetch for live docs
+- ~~references/inbox-zero.md~~ - [DEPRECATED] Use WebFetch for live docs
+- ~~references/troubleshooting.md~~ - [DEPRECATED] Use WebFetch for live docs
 
 ### Templates
 - **[basic-config.jsonnet](assets/templates/basic-config.jsonnet)**: Simple starter configuration
