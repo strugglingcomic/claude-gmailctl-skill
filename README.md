@@ -1,4 +1,4 @@
-# Claude Gmail Control Skill
+# claude-gmailctl-skill
 
 A Claude Code skill for managing Gmail filters and labels using [`gmailctl`](https://github.com/mbrt/gmailctl) to achieve and maintain Inbox Zero through automated email triage.
 
