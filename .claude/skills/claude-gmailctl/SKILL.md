@@ -40,66 +40,72 @@ This skill is organized into distinct components for granular understanding:
 - User needs to authenticate or re-authenticate with Gmail
 - Installation or credential issues occur
 
-### Installation
+### Quick Setup
 
-**Check if gmailctl is already installed:**
+**1. Check installation:**
 ```bash
 gmailctl version
 ```
 
-**If not installed, guide user to install:**
-
-**macOS:**
+**2. Install if needed:**
 ```bash
+# macOS
 brew install gmailctl
-```
 
-**Linux:**
-```bash
+# Linux
 curl -L https://github.com/mbrt/gmailctl/releases/latest/download/gmailctl-linux-amd64 -o gmailctl
-chmod +x gmailctl
-sudo mv gmailctl /usr/local/bin/
+chmod +x gmailctl && sudo mv gmailctl /usr/local/bin/
 ```
 
-### Gmail Authentication
-
-**Initialize configuration directory:**
+**3. Initialize and authenticate:**
 ```bash
+# Initialize (no prompts, completes instantly)
 gmailctl init
-# Creates ~/.gmailctl/config.jsonnet and directory structure
-```
 
-**Authenticate with Gmail:**
-```bash
+# Authenticate (browser opens for OAuth)
 gmailctl download
 ```
 
-This will:
-1. Open browser for Google OAuth authentication
-2. Request `gmail.settings.basic` scope permission
-3. Save credentials to `~/.gmailctl/credentials.json`
-4. Download current Gmail filter state
-
-**Authentication Troubleshooting:**
-- **Error: "Failed to load credentials"** → Delete `~/.gmailctl/credentials.json` and re-run `gmailctl download`
-- **Error: "insufficient permissions"** → Verify correct Google account and OAuth scope
-- **Browser doesn't open** → Check firewall settings and try with `--no-browser` flag
-
-### Verification
-
-Confirm setup succeeded:
+**4. Verify:**
 ```bash
-# Should show current Gmail filters
-gmailctl diff
-
-# Should list configuration directory
-ls -la ~/.gmailctl/
+gmailctl diff  # Should show "No changes" or list current filters
 ```
 
+### What Happens During Setup
+
+- **`gmailctl init`**: Creates `~/.gmailctl/config.jsonnet` template
+- **`gmailctl download`**: Opens browser → OAuth consent → saves credentials → downloads Gmail filters
+
 **Files created:**
-- `~/.gmailctl/config.jsonnet` - Filter configuration (edit this)
-- `~/.gmailctl/credentials.json` - OAuth credentials (do NOT commit to git)
+- `~/.gmailctl/config.jsonnet` - Edit this to define filters
+- `~/.gmailctl/credentials.json` - OAuth tokens (⚠️ do NOT commit to git)
 - `~/.gmailctl/cache/` - Downloaded Gmail state
+
+### For Installation/Setup Issues
+
+**Use WebFetch for detailed troubleshooting:**
+
+```
+WebFetch: https://github.com/mbrt/gmailctl/blob/master/README.md
+Prompt: "Extract [installation/authentication/troubleshooting] section"
+```
+
+**When to WebFetch:**
+- Platform-specific installation issues (Windows, alternative methods)
+- Detailed OAuth flow explanation needed
+- Browser doesn't open during auth
+- Multiple Google accounts management
+- Advanced configuration (custom paths, multiple configs)
+- Version upgrade instructions
+
+**Quick troubleshooting (no WebFetch needed):**
+- **"Failed to load credentials"** → `rm ~/.gmailctl/credentials.json && gmailctl download`
+- **"insufficient permissions"** → Re-run `gmailctl download`, ensure you click "Allow" for all permissions
+- **"Browser doesn't open"** → Add `--no-browser` flag, manually visit shown URL
+
+**Load `references/setup-guide.md` for:**
+- Table of common issues → WebFetch mappings
+- When/how to use WebFetch for setup questions
 
 ---
 
