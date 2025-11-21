@@ -492,17 +492,30 @@ gmailctl apply
 
 ```jsonnet
 actions: {
-  archive: true,           // Remove from inbox
-  markRead: true,         // Mark as read
-  markImportant: true,    // Star/mark important
-  markNotImportant: true, // Remove star
+  archive: true,              // Remove from inbox
+  markRead: true,             // Mark as read
+  star: true,                 // Star the message
+  markImportant: true,        // Always mark as important (overrides Gmail heuristics)
+  markImportant: false,       // Never mark as important (NOT markNotImportant!)
+  markSpam: false,            // Prevent spam classification (markSpam: true not supported)
+  category: "updates",        // Categorize: personal, social, updates, forums, promotions
   labels: ["Label1", "Label2"],  // Apply labels (array)
+  forward: "email@example.com",  // Forward to another address
 
   // ⚠️ Destructive actions - require explicit user approval:
-  delete: true,           // Move to trash
-  markSpam: true          // Mark as spam (affects future delivery)
+  delete: true,               // Move to trash
 }
 ```
+
+**Common mistakes:**
+- ❌ `markNotImportant: true` - This field doesn't exist
+- ✅ `markImportant: false` - Use this instead to never mark as important
+- ❌ `markSpam: true` - Not supported by Gmail
+- ✅ `markSpam: false` - Only prevent spam classification
+
+**For complete actions reference with examples and common patterns:**
+- Read `references/actions-reference.md` for comprehensive syntax guide
+- Includes all available actions, constraints, and common mistake corrections
 
 ### Simple Configuration Example
 
