@@ -194,11 +194,13 @@ gmailctl diff
 ```
 
 **Interpret output:**
-- **No changes** → Local config matches Gmail perfectly
+- **No output** → Local config matches Gmail perfectly (normal after successful apply)
 - **Changes shown** → Differences between config.jsonnet and Gmail
   - Green (+) = Would be added
   - Red (-) = Would be removed
   - Yellow (~) = Would be modified
+
+**Note:** `gmailctl diff` returns no output when there are no differences. This is expected behavior and indicates the last `gmailctl apply` completed successfully.
 
 ### Analyze Existing Filters
 
@@ -415,9 +417,14 @@ gmailctl apply
 # Create backup first
 scripts/backup_config.sh ~/.gmailctl/config.jsonnet
 
-# Apply changes
+# Apply changes (interactive confirmation)
 gmailctl apply
+
+# Or apply without confirmation (for programmatic use)
+gmailctl apply --yes
 ```
+
+**Note:** Use `--yes` flag when running gmailctl programmatically or in automated workflows to skip interactive confirmation.
 
 **Post-deployment:**
 1. Verify filters in Gmail UI
