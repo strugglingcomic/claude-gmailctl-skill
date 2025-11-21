@@ -2,6 +2,8 @@
 
 A Claude Code skill for managing Gmail filters and labels using [`gmailctl`](https://github.com/mbrt/gmailctl) to achieve and maintain Inbox Zero through automated email triage.
 
+Acknowledgement: obviously this skill owes a huge debt to `gmailctl` itself, and though `gmailctl` already includes an `AGENTS.md` file, essentially I just wanted to wrap it specifically in a Claude skill. As with anything, it's up to you the user to choose what you prefer -- no right or wrong choice, just preference!
+
 ## Overview
 
 This skill enables Claude to help you:
