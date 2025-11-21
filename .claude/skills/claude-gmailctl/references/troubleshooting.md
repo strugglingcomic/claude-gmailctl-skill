@@ -2,6 +2,22 @@
 
 Common issues and solutions when using gmailctl for Gmail filter management.
 
+## Table of Contents
+
+- [Installation Issues](#installation-issues) - gmailctl not found, permission errors
+- [Authentication Issues](#authentication-issues) - OAuth, credentials, 403 errors
+- [Configuration Issues](#configuration-issues) - Syntax errors, label problems
+- [Apply Issues](#apply-issues) - Deployment failures, API errors
+- [Runtime Issues](#runtime-issues) - Filter not matching, unexpected behavior
+- [Performance Issues](#performance-issues) - Slow operations, timeouts
+- [Testing Issues](#testing-issues) - Validation problems, diff output
+- [File and Path Issues](#file-and-path-issues) - Config location, permissions
+- [Backup and Recovery](#backup-and-recovery) - Rollback, restore configurations
+- [Getting Help](#getting-help) - When to use WebFetch, GitHub issues
+- [Quick Reference](#quick-reference) - Common error messages and fixes
+
+---
+
 ## Installation Issues
 
 ### gmailctl command not found

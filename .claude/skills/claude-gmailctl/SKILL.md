@@ -31,6 +31,20 @@ This skill is organized into distinct components for granular understanding:
 5. **[Simple Features](#component-5-simple-features)** - Basic filter operators and actions
 6. **[Advanced Features](#component-6-advanced-features)** - Jsonnet programming, reusable patterns, and complex workflows
 
+## Reference Files Guide
+
+Load these reference files as needed for detailed guidance:
+
+| Reference File | When to Read | Contents |
+|----------------|--------------|----------|
+| `references/setup-oauth.md` | OAuth setup, "403 Access denied", credentials.json issues | Complete Google Cloud OAuth setup with screenshots-level detail (6 steps) |
+| `references/actions-reference.md` | User needs complete action syntax, common mistakes, or action combinations | All available filter actions with examples and constraints |
+| `references/inbox-zero.md` | User asks about email organization strategy, label structure, or Inbox Zero methodology | Inbox Zero principles, label design, processing workflows |
+| `references/troubleshooting.md` | Installation issues, authentication problems, or error resolution beyond quick fixes | Comprehensive troubleshooting for installation, auth, syntax, and runtime errors |
+| `references/setup-guide.md` | Need guidance on when/how to use WebFetch for setup questions | WebFetch strategy reference for setup-related queries |
+
+**Important**: Only load reference files when needed. Use the table above to determine relevance.
+
 ---
 
 ## Component 1: Setup & Initialization
@@ -59,50 +73,25 @@ chmod +x gmailctl && sudo mv gmailctl /usr/local/bin/
 
 **3. Set up Google Cloud OAuth credentials (first-time only):**
 
-If running `gmailctl init` fails with "credentials.json: no such file or directory", create OAuth credentials:
+If running `gmailctl init` fails with "credentials.json: no such file or directory", you need to create OAuth credentials.
 
-1. **Go to Google Cloud Console**: https://console.developers.google.com
-2. **Create/select project**: Create new project or use existing
-3. **Enable Gmail API**:
-   - Go to "Enable APIs and Services"
-   - Search for "Gmail API"
-   - Click "Enable"
-4. **Configure OAuth consent screen**:
-   - Go to "OAuth consent screen"
-   - **User Type**: Select "External" (personal Gmail) or "Internal" (workspace)
-   - Click "Create"
-   - **Application name**: Enter "gmailctl"
-   - **User support email**: Use your email
-   - **Developer contact**: Use your email
-   - Click "Save and Continue"
-   - **Scopes**: Click "Add or Remove Scopes" and add:
-     - `https://www.googleapis.com/auth/gmail.labels`
-     - `https://www.googleapis.com/auth/gmail.settings.basic`
-   - Save and Continue
-   - **⚠️ CRITICAL - Add test user**:
-     - Scroll to "Test users" section
-     - Click "+ ADD USERS"
-     - Enter your Gmail address (the account you'll manage)
-     - Click "Save"
-   - **Keep app in Testing mode** (do NOT publish to Production)
-5. **Create OAuth credentials**:
-   - Go to "Credentials" in left sidebar
-   - Click "Create Credentials"
-   - Select "OAuth client ID"
-   - **Application type**: Select **"Desktop app"**
-   - Give it a name (e.g., "gmailctl-desktop")
-   - Click "Create"
-6. **Download credentials**:
-   - Click download icon (⬇️) next to your new credential
-   - Save to `~/.gmailctl/credentials.json`
+**For detailed OAuth setup instructions, read `references/setup-oauth.md`** which covers:
+- Creating Google Cloud project
+- Enabling Gmail API
+- Configuring OAuth consent screen
+- Adding yourself as test user (critical!)
+- Creating Desktop app credentials
+- Downloading credentials.json
 
-**Why Testing mode with test user?**
-- No app verification required (works immediately)
-- Avoids scary OAuth warning screens
-- Sufficient for personal use
-- Production mode requires Google verification (unnecessary for personal tools)
+**Quick summary:**
+- Create OAuth credentials at https://console.developers.google.com
+- Enable Gmail API
+- Add required scopes: `gmail.labels`, `gmail.settings.basic`
+- **Critical**: Add your Gmail address as a test user
+- Download credentials as Desktop app (not Web app)
+- Save to `~/.gmailctl/credentials.json`
 
-**Common error**: 403 "Access denied" during OAuth → You forgot to add yourself as a test user (step 4)
+**Common error**: 403 "Access denied" → You forgot to add yourself as a test user. See `references/setup-oauth.md` for fix.
 
 **4. Initialize and authenticate:**
 ```bash
@@ -132,31 +121,17 @@ gmailctl diff  # Should show "No changes" or list current filters
 
 ### For Installation/Setup Issues
 
-**Use WebFetch for detailed troubleshooting:**
-
-```
-WebFetch: https://github.com/mbrt/gmailctl/blob/master/README.md
-Prompt: "Extract [installation/authentication/troubleshooting] section"
-```
-
-**When to WebFetch:**
-- Platform-specific installation issues (Windows, alternative methods)
-- Detailed OAuth flow explanation needed
-- Browser doesn't open during auth
-- Multiple Google accounts management
-- Advanced configuration (custom paths, multiple configs)
-- Version upgrade instructions
-
-**Quick troubleshooting (no WebFetch needed):**
-- **"403 Access denied" during OAuth** → Add yourself as a test user in Google Cloud Console OAuth consent screen
+**Quick troubleshooting:**
+- **"403 Access denied"** → Read `references/setup-oauth.md` for test user setup
 - **"Failed to load credentials"** → `rm ~/.gmailctl/credentials.json && gmailctl download`
-- **"insufficient permissions"** → Re-run `gmailctl download`, ensure you click "Allow" for all permissions
-- **"Browser doesn't open"** → Add `--no-browser` flag, manually visit shown URL
-- **"credentials.json: no such file or directory"** → Complete Google Cloud OAuth setup (step 3 above)
+- **"credentials.json: no such file"** → Read `references/setup-oauth.md` for complete OAuth setup
+- **"Browser doesn't open"** → Use `--no-browser` flag, manually visit shown URL
+- **"insufficient permissions"** → Re-run `gmailctl download`, click "Allow" for all permissions
 
-**Load `references/setup-guide.md` for:**
-- Table of common issues → WebFetch mappings
-- When/how to use WebFetch for setup questions
+**For advanced troubleshooting:**
+- Read `references/setup-guide.md` for WebFetch usage patterns
+- Read `references/troubleshooting.md` for comprehensive issue resolution
+- Use WebFetch for platform-specific issues: https://github.com/mbrt/gmailctl/blob/master/README.md
 
 ---
 
@@ -227,6 +202,7 @@ grep "name:" ~/.gmailctl/config.jsonnet | grep -v version
 - What manual processing do you do repeatedly?
 - Any specific senders or domains to prioritize?
 - Current pain points with email management?
+- Are you aiming for Inbox Zero or another organizational system?
 
 **Use Gmail search to analyze:**
 ```
@@ -237,6 +213,14 @@ Test queries like:
 ```
 
 This reveals actual email volumes and patterns to inform filter design.
+
+**For Inbox Zero methodology:**
+If user mentions "Inbox Zero" or wants comprehensive email organization strategy, read `references/inbox-zero.md` for:
+- Core Inbox Zero principles (5 categories: Delete, Delegate, Respond, Defer, Archive)
+- Recommended label structures (Work, Personal, Reference, Low-Priority, Action-Required)
+- Automated triage workflows
+- Email processing best practices
+- Decision fatigue reduction strategies
 
 ---
 
@@ -773,85 +757,30 @@ local archiveAndLabel(query, label) = {
 
 ---
 
-## Example Interactions
+## Typical Workflows
 
-### "Help me set up gmailctl"
+**Setup**: Component 1 → Initialize → Authenticate → Verify with `gmailctl diff`
 
-**Workflow:**
-1. Use **Component 1 (Setup & Initialization)**
-2. Check if gmailctl installed: `gmailctl version`
-3. If not, guide through installation for their OS
-4. Run `gmailctl init` to create config directory
-5. Run `gmailctl download` to authenticate
-6. Verify setup with `gmailctl diff`
-7. Explain next steps: assessment and filter design
+**Review existing**: Component 2 → Read config → Download state → Analyze patterns → Suggest improvements
 
-### "Review my existing filters"
+**Create filters**: Component 2 (assess) → Component 3 (design) → Validate → Component 4 (deploy)
 
-**Workflow:**
-1. Use **Component 2 (Assessment)**
-2. Read `~/.gmailctl/config.jsonnet`
-3. Run `gmailctl download` to get current Gmail state
-4. Run `gmailctl diff` to check for drift
-5. Analyze: count rules, identify patterns, check for issues
-6. Provide specific suggestions with rationale
-7. Ask if user wants to implement improvements
-
-### "Help me auto-archive newsletters"
-
-**Workflow:**
-1. Ask which newsletters/senders to target
-2. Use **Component 2 (Assessment)** to check current config
-3. Use **Component 5 (Simple Features)** for basic filter
-4. Test query in Gmail search: `list:newsletter@example.com`
-5. Design filter using **Component 3 (Filter Design)**
-6. Explain: "This will automatically archive future emails from X, label them as 'Newsletters', and mark as read"
-7. Validate with `gmailctl diff`
-8. Show diff output to user
-9. Ask about **deployment mode preference** (Component 4)
-10. After approval, apply with `gmailctl apply`
-
-### "I need complex filters with reusable patterns"
-
-**Workflow:**
-1. Identify this requires **Component 6 (Advanced Features)**
-2. Use WebFetch to read: https://github.com/mbrt/gmailctl/blob/master/README.md
-3. Search for "Tips and Tricks" section
-4. Fetch specific advanced patterns user needs (e.g., chainFilters, functions)
-5. Provide examples from live documentation
-6. Help implement using Jsonnet features
-7. Reference `assets/templates/advanced-config.jsonnet` if helpful
+**Advanced patterns**: Component 6 → WebFetch gmailctl docs → Implement Jsonnet features
 
 ---
 
 ## Troubleshooting Quick Reference
 
-**Syntax error in config:**
-```bash
-gmailctl debug  # Shows line number and error details
-```
+| Issue | Quick Fix |
+|-------|-----------|
+| Syntax error | `gmailctl debug` |
+| Auth failed | `rm ~/.gmailctl/credentials.json && gmailctl download` |
+| 403 Access denied | Read `references/setup-oauth.md` - add test user |
+| Label not found | Define in `labels:` section first |
+| Filter not matching | Test query in Gmail search bar, check syntax |
+| Changes not applied | Verify `gmailctl diff` shows changes, check credentials |
 
-**Authentication failed:**
-```bash
-rm ~/.gmailctl/credentials.json
-gmailctl download  # Re-authenticate
-```
-
-**Label not found:**
-- Ensure label defined in `labels:` section before use in `actions:`
-
-**Filter not matching expected emails:**
-1. Test query in Gmail search bar
-2. Check query syntax (quotes, operators, spacing)
-3. Verify filter order (more specific should come first)
-4. Check for conflicting rules
-
-**Changes not applied:**
-- Run `gmailctl diff` to verify differences exist
-- Check internet connection
-- Verify credentials still valid
-
-**For detailed troubleshooting, reference `references/troubleshooting.md` or use WebFetch to read latest gmailctl issues/docs.**
+**For comprehensive troubleshooting**: Read `references/troubleshooting.md`
 
 ---
 

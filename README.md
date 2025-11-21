@@ -72,11 +72,11 @@ claude-gmailctl-skill/
 │           │   └── templates/         # Configuration templates
 │           │       ├── basic-config.jsonnet       # Simple Inbox Zero setup
 │           │       └── advanced-config.jsonnet    # Advanced patterns
-│           ├── references/            # [DEPRECATED] Use WebFetch for live docs
-│           │   ├── README.md         # Deprecation notice and migration guide
-│           │   ├── gmailctl-syntax.md            # [Deprecated] Use WebFetch instead
-│           │   ├── inbox-zero.md                 # [Deprecated] Use WebFetch instead
-│           │   └── troubleshooting.md            # [Deprecated] Use WebFetch instead
+│           ├── references/            # Reference documentation
+│           │   ├── actions-reference.md          # Complete filter actions guide
+│           │   ├── setup-guide.md                # WebFetch usage for setup/auth
+│           │   ├── setup-oauth.md                # Detailed OAuth setup steps
+│           │   └── inbox-zero.md                 # Inbox Zero methodology
 │           └── scripts/              # Helper utilities
 │               ├── validate_config.sh            # Validate before applying
 │               └── backup_config.sh              # Backup configuration
@@ -126,8 +126,11 @@ Claude automatically selects the appropriate component based on your needs.
 
 ### Progressive Disclosure
 
-- **SKILL.md**: Component-based workflow and patterns (~790 lines)
-- **references/**: [DEPRECATED] Replaced with WebFetch for live docs
+- **SKILL.md**: Component-based workflow and patterns (~550 lines)
+- **references/**: Loaded as needed for detailed guidance
+  - `actions-reference.md` - Complete filter actions syntax
+  - `setup-oauth.md` - Detailed OAuth setup instructions
+  - `inbox-zero.md` - Email management methodology
 - **assets/templates/**: Reusable configuration examples
 - **scripts/**: Validation and backup utilities
 
@@ -180,10 +183,9 @@ Claude automatically selects the appropriate component based on your needs.
 ### Documentation
 - **[SKILL.md](.claude/skills/claude-gmailctl/SKILL.md)**: Main skill instructions for Claude (component-based)
 - **[SETUP.md](SETUP.md)**: Complete setup and troubleshooting guide
-- **[references/README.md](.claude/skills/claude-gmailctl/references/README.md)**: Deprecation notice for reference docs
-- ~~references/gmailctl-syntax.md~~ - [DEPRECATED] Use WebFetch for live docs
-- ~~references/inbox-zero.md~~ - [DEPRECATED] Use WebFetch for live docs
-- ~~references/troubleshooting.md~~ - [DEPRECATED] Use WebFetch for live docs
+- **[actions-reference.md](.claude/skills/claude-gmailctl/references/actions-reference.md)**: Complete filter actions syntax guide
+- **[setup-oauth.md](.claude/skills/claude-gmailctl/references/setup-oauth.md)**: Detailed OAuth credential setup
+- **[inbox-zero.md](.claude/skills/claude-gmailctl/references/inbox-zero.md)**: Inbox Zero methodology and best practices
 
 ### Templates
 - **[basic-config.jsonnet](.claude/skills/claude-gmailctl/assets/templates/basic-config.jsonnet)**: Simple starter configuration
