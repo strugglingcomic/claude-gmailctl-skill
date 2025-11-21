@@ -26,9 +26,15 @@ Prompt: "Extract installation instructions for all platforms"
 - Version requirements
 
 ### Authentication/OAuth Troubleshooting
-**User scenario:** "OAuth isn't working" or "Browser won't open during setup"
+**User scenario:** "OAuth isn't working" or "Browser won't open during setup" or "403 Access denied"
 
-**Action:**
+**Common OAuth issues (no WebFetch needed):**
+- **403 "Access denied"**: User forgot to add themselves as a test user in Google Cloud Console OAuth consent screen
+- **Missing credentials.json**: User needs to create OAuth credentials in Google Cloud Console (see SKILL.md Component 1 step 3)
+- **Wrong application type**: Must use "Desktop app" not "Web application"
+- **Missing scopes**: Must include both gmail.labels and gmail.settings.basic scopes
+
+**Action for detailed troubleshooting:**
 ```
 WebFetch: https://github.com/mbrt/gmailctl/blob/master/README.md
 Prompt: "Extract authentication and OAuth setup information, including troubleshooting"
@@ -83,14 +89,16 @@ gmailctl diff
 
 ## Common Issues - When to WebFetch
 
-| User Issue | WebFetch For |
-|------------|--------------|
-| "Installation failed" | Installation section + GitHub issues |
-| "OAuth permission denied" | Authentication section |
-| "Browser doesn't open" | Troubleshooting section |
-| "Multiple accounts" | Advanced usage section |
-| "Config file location" | Configuration section |
-| "Upgrade gmailctl" | Installation/upgrade section |
+| User Issue | Quick Fix (no WebFetch) | WebFetch For |
+|------------|-------------------------|--------------|
+| "403 Access denied" | Add yourself as test user in OAuth consent screen | - |
+| "credentials.json missing" | Complete Google Cloud OAuth setup (SKILL.md step 3) | - |
+| "Installation failed" | - | Installation section + GitHub issues |
+| "OAuth permission denied" | Check scopes (gmail.labels, gmail.settings.basic) | Authentication section |
+| "Browser doesn't open" | Use `--no-browser` flag | Troubleshooting section |
+| "Multiple accounts" | - | Advanced usage section |
+| "Config file location" | - | Configuration section |
+| "Upgrade gmailctl" | - | Installation/upgrade section |
 
 ---
 

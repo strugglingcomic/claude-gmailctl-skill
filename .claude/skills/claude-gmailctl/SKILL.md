@@ -57,28 +57,77 @@ curl -L https://github.com/mbrt/gmailctl/releases/latest/download/gmailctl-linux
 chmod +x gmailctl && sudo mv gmailctl /usr/local/bin/
 ```
 
-**3. Initialize and authenticate:**
+**3. Set up Google Cloud OAuth credentials (first-time only):**
+
+If running `gmailctl init` fails with "credentials.json: no such file or directory", create OAuth credentials:
+
+1. **Go to Google Cloud Console**: https://console.developers.google.com
+2. **Create/select project**: Create new project or use existing
+3. **Enable Gmail API**:
+   - Go to "Enable APIs and Services"
+   - Search for "Gmail API"
+   - Click "Enable"
+4. **Configure OAuth consent screen**:
+   - Go to "OAuth consent screen"
+   - **User Type**: Select "External" (personal Gmail) or "Internal" (workspace)
+   - Click "Create"
+   - **Application name**: Enter "gmailctl"
+   - **User support email**: Use your email
+   - **Developer contact**: Use your email
+   - Click "Save and Continue"
+   - **Scopes**: Click "Add or Remove Scopes" and add:
+     - `https://www.googleapis.com/auth/gmail.labels`
+     - `https://www.googleapis.com/auth/gmail.settings.basic`
+   - Save and Continue
+   - **⚠️ CRITICAL - Add test user**:
+     - Scroll to "Test users" section
+     - Click "+ ADD USERS"
+     - Enter your Gmail address (the account you'll manage)
+     - Click "Save"
+   - **Keep app in Testing mode** (do NOT publish to Production)
+5. **Create OAuth credentials**:
+   - Go to "Credentials" in left sidebar
+   - Click "Create Credentials"
+   - Select "OAuth client ID"
+   - **Application type**: Select **"Desktop app"**
+   - Give it a name (e.g., "gmailctl-desktop")
+   - Click "Create"
+6. **Download credentials**:
+   - Click download icon (⬇️) next to your new credential
+   - Save to `~/.gmailctl/credentials.json`
+
+**Why Testing mode with test user?**
+- No app verification required (works immediately)
+- Avoids scary OAuth warning screens
+- Sufficient for personal use
+- Production mode requires Google verification (unnecessary for personal tools)
+
+**Common error**: 403 "Access denied" during OAuth → You forgot to add yourself as a test user (step 4)
+
+**4. Initialize and authenticate:**
 ```bash
-# Initialize (no prompts, completes instantly)
+# Initialize (creates config template)
 gmailctl init
 
 # Authenticate (browser opens for OAuth)
 gmailctl download
 ```
 
-**4. Verify:**
+**5. Verify:**
 ```bash
 gmailctl diff  # Should show "No changes" or list current filters
 ```
 
 ### What Happens During Setup
 
+- **Google Cloud setup (first-time)**: Create OAuth credentials for Gmail API access
 - **`gmailctl init`**: Creates `~/.gmailctl/config.jsonnet` template
 - **`gmailctl download`**: Opens browser → OAuth consent → saves credentials → downloads Gmail filters
 
 **Files created:**
 - `~/.gmailctl/config.jsonnet` - Edit this to define filters
-- `~/.gmailctl/credentials.json` - OAuth tokens (⚠️ do NOT commit to git)
+- `~/.gmailctl/credentials.json` - OAuth credentials from Google Cloud (⚠️ do NOT commit to git)
+- `~/.gmailctl/token.json` - Access token (created after OAuth flow)
 - `~/.gmailctl/cache/` - Downloaded Gmail state
 
 ### For Installation/Setup Issues
@@ -99,9 +148,11 @@ Prompt: "Extract [installation/authentication/troubleshooting] section"
 - Version upgrade instructions
 
 **Quick troubleshooting (no WebFetch needed):**
+- **"403 Access denied" during OAuth** → Add yourself as a test user in Google Cloud Console OAuth consent screen
 - **"Failed to load credentials"** → `rm ~/.gmailctl/credentials.json && gmailctl download`
 - **"insufficient permissions"** → Re-run `gmailctl download`, ensure you click "Allow" for all permissions
 - **"Browser doesn't open"** → Add `--no-browser` flag, manually visit shown URL
+- **"credentials.json: no such file or directory"** → Complete Google Cloud OAuth setup (step 3 above)
 
 **Load `references/setup-guide.md` for:**
 - Table of common issues → WebFetch mappings
