@@ -41,6 +41,12 @@ See [SETUP.md](SETUP.md) for detailed setup instructions.
 
 ## Usage with Claude Code
 
+### Auto-Discovery
+
+This skill is automatically discovered by Claude Code when placed in a `.claude/skills/` directory. Simply clone or place this repository in your workspace, and Claude will detect the `claude-gmailctl` skill.
+
+### When to Use
+
 Invoke this skill when you need help with:
 - Creating or modifying Gmail filters
 - Organizing email with labels and categories
@@ -58,21 +64,26 @@ Invoke this skill when you need help with:
 
 ```
 claude-gmailctl-skill/
-├── SKILL.md                           # Main skill prompt (component-based)
+├── .claude/
+│   └── skills/
+│       └── claude-gmailctl/           # Auto-discovered skill
+│           ├── SKILL.md               # Main skill prompt (component-based)
+│           ├── assets/
+│           │   └── templates/         # Configuration templates
+│           │       ├── basic-config.jsonnet       # Simple Inbox Zero setup
+│           │       └── advanced-config.jsonnet    # Advanced patterns
+│           ├── references/            # [DEPRECATED] Use WebFetch for live docs
+│           │   ├── README.md         # Deprecation notice and migration guide
+│           │   ├── gmailctl-syntax.md            # [Deprecated] Use WebFetch instead
+│           │   ├── inbox-zero.md                 # [Deprecated] Use WebFetch instead
+│           │   └── troubleshooting.md            # [Deprecated] Use WebFetch instead
+│           └── scripts/              # Helper utilities
+│               ├── validate_config.sh            # Validate before applying
+│               └── backup_config.sh              # Backup configuration
 ├── README.md                          # This file
 ├── SETUP.md                           # Detailed setup guide
-├── assets/
-│   └── templates/                     # Configuration templates
-│       ├── basic-config.jsonnet       # Simple Inbox Zero setup
-│       └── advanced-config.jsonnet    # Advanced patterns
-├── references/                        # [DEPRECATED] Use WebFetch for live docs
-│   ├── README.md                     # Deprecation notice and migration guide
-│   ├── gmailctl-syntax.md            # [Deprecated] Use WebFetch instead
-│   ├── inbox-zero.md                 # [Deprecated] Use WebFetch instead
-│   └── troubleshooting.md            # [Deprecated] Use WebFetch instead
-└── scripts/                          # Helper utilities
-    ├── validate_config.sh            # Validate before applying
-    └── backup_config.sh              # Backup configuration
+├── CHANGELOG.md                       # Version history
+└── LICENSE                            # MIT License
 ```
 
 ### Component-Based Structure
@@ -167,20 +178,20 @@ Claude automatically selects the appropriate component based on your needs.
 ## Resources
 
 ### Documentation
-- **[SKILL.md](SKILL.md)**: Main skill instructions for Claude (component-based)
+- **[SKILL.md](.claude/skills/claude-gmailctl/SKILL.md)**: Main skill instructions for Claude (component-based)
 - **[SETUP.md](SETUP.md)**: Complete setup and troubleshooting guide
-- **[references/README.md](references/README.md)**: Deprecation notice for reference docs
+- **[references/README.md](.claude/skills/claude-gmailctl/references/README.md)**: Deprecation notice for reference docs
 - ~~references/gmailctl-syntax.md~~ - [DEPRECATED] Use WebFetch for live docs
 - ~~references/inbox-zero.md~~ - [DEPRECATED] Use WebFetch for live docs
 - ~~references/troubleshooting.md~~ - [DEPRECATED] Use WebFetch for live docs
 
 ### Templates
-- **[basic-config.jsonnet](assets/templates/basic-config.jsonnet)**: Simple starter configuration
-- **[advanced-config.jsonnet](assets/templates/advanced-config.jsonnet)**: Advanced patterns with Jsonnet features
+- **[basic-config.jsonnet](.claude/skills/claude-gmailctl/assets/templates/basic-config.jsonnet)**: Simple starter configuration
+- **[advanced-config.jsonnet](.claude/skills/claude-gmailctl/assets/templates/advanced-config.jsonnet)**: Advanced patterns with Jsonnet features
 
 ### Scripts
-- **[validate_config.sh](scripts/validate_config.sh)**: Validate syntax and preview changes
-- **[backup_config.sh](scripts/backup_config.sh)**: Create timestamped backups
+- **[validate_config.sh](.claude/skills/claude-gmailctl/scripts/validate_config.sh)**: Validate syntax and preview changes
+- **[backup_config.sh](.claude/skills/claude-gmailctl/scripts/backup_config.sh)**: Create timestamped backups
 
 ### External Links
 - [gmailctl GitHub Repository](https://github.com/mbrt/gmailctl)

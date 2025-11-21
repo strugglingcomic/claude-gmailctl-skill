@@ -1,5 +1,46 @@
 # Changelog
 
+## [2.1.0] - 2025-11-20
+
+### Repository Restructure for Auto-Discovery
+
+Refactored repository to use standard `.claude/skills/` directory structure for automatic skill discovery in Claude Code.
+
+### Changed
+
+#### Directory Structure
+- **Before**: Skill files at repository root
+- **After**: Skill files in `.claude/skills/claude-gmailctl/`
+
+**New structure**:
+```
+claude-gmailctl-skill/
+├── .claude/skills/claude-gmailctl/    # Auto-discovered skill
+│   ├── SKILL.md
+│   ├── assets/
+│   ├── references/
+│   └── scripts/
+├── README.md                           # Repository documentation
+├── SETUP.md
+├── CHANGELOG.md
+└── LICENSE
+```
+
+#### Documentation Updates
+- Updated README.md with new directory structure
+- Added auto-discovery explanation
+- Updated all file path references in documentation
+- Maintained all functionality and documentation from 2.0.0
+
+### Benefits
+
+1. **Auto-Discovery**: Claude Code automatically detects skill in `.claude/skills/`
+2. **Standard Structure**: Follows Claude Code skill conventions
+3. **Clean Separation**: Repository docs (README, SETUP, LICENSE) separate from skill files
+4. **Better Organization**: Clear distinction between user documentation and skill prompt
+
+---
+
 ## [2.0.0] - 2025-11-20
 
 ### Major Restructure: Component-Based Architecture
