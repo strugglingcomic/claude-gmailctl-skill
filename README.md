@@ -9,9 +9,21 @@ Acknowledgement: obviously this skill owes a huge debt to `gmailctl` itself, and
 This skill enables Claude to help you:
 - **Manage Gmail filters as code** using declarative Jsonnet configuration
 - **Implement Inbox Zero workflows** with automated triage and organization
+- **Analyze email patterns and auto-suggest filters** (NEW - using forked gmailctl)
 - **Design filter rules** based on email patterns and priorities
 - **Validate and test** configurations before applying to Gmail
 - **Maintain version-controlled** email management system
+
+### NEW: Email Analysis & Auto-Suggestion
+
+This repository includes an **enhanced fork of gmailctl** (`gmailctl-fork/`) that adds email metadata analysis capabilities:
+
+- **Automated pattern detection** - Analyzes your recent emails to identify newsletters, notifications, receipts, and bulk mail
+- **Smart filter suggestions** - Generates gmailctl rules based on actual email patterns
+- **Privacy-respecting** - Only reads email headers (metadata scope), not message content
+- **Inbox Zero oriented** - Suggestions follow Inbox Zero principles for automated triage
+
+See [Component 3: Email Analysis](# claude/skills/claude-gmailctl/SKILL.md#component-3-email-analysis--auto-suggestion) in the skill documentation for complete usage instructions.
 
 ## Quick Start
 
@@ -82,6 +94,11 @@ claude-gmailctl-skill/
 │           └── scripts/              # Helper utilities
 │               ├── validate_config.sh            # Validate before applying
 │               └── backup_config.sh              # Backup configuration
+├── gmailctl-fork/                     # Enhanced fork with email analysis (NEW)
+│   ├── README-FORK.md                # Fork documentation
+│   ├── install.sh                    # Installation script
+│   ├── cmd/gmailctl/cmd/analyze_cmd.go # New analyze command
+│   └── [standard gmailctl structure]
 ├── README.md                          # This file
 ├── SETUP.md                           # Detailed setup guide
 ├── CHANGELOG.md                       # Version history
@@ -90,14 +107,15 @@ claude-gmailctl-skill/
 
 ### Component-Based Structure
 
-The skill is organized into 6 distinct components:
+The skill is organized into 7 distinct components:
 
 1. **Setup & Initialization** - Installing gmailctl and Gmail authentication
 2. **Assessment** - Analyzing existing filters, labels, and email patterns
-3. **Filter Design** - Creating and validating filter rules
-4. **Deployment** - Applying changes with deployment mode choice (overwrite vs. additive)
-5. **Simple Features** - Basic Gmail operators and actions (quick reference)
-6. **Advanced Features** - Jsonnet programming and complex patterns (uses live WebFetch)
+3. **Email Analysis & Auto-Suggestion** - Using forked gmailctl to analyze patterns and suggest filters (NEW)
+4. **Filter Design** - Creating and validating filter rules
+5. **Deployment** - Applying changes with deployment mode choice (overwrite vs. additive)
+6. **Simple Features** - Basic Gmail operators and actions (quick reference)
+7. **Advanced Features** - Jsonnet programming and complex patterns (uses live WebFetch)
 
 ## How It Works
 
