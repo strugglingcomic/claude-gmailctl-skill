@@ -16,6 +16,7 @@ Activate this skill when users request help with:
 - Creating or modifying Gmail filters
 - Organizing email with labels and categories
 - Implementing Inbox Zero or automated email triage
+- **Analyzing email patterns and auto-suggesting filters** (NEW)
 - Reviewing and optimizing existing filter configurations
 - Converting manual email processing into automated rules
 - Managing `~/.gmailctl/config.jsonnet` configuration
@@ -26,10 +27,11 @@ This skill is organized into distinct components for granular understanding:
 
 1. **[Setup & Initialization](#component-1-setup--initialization)** - Installing gmailctl and authenticating with Gmail
 2. **[Assessment](#component-2-assessment)** - Understanding existing filters, labels, and email patterns
-3. **[Filter Design](#component-3-filter-design)** - Creating and validating filter rules
-4. **[Deployment](#component-4-deployment)** - Applying changes safely with deployment mode choice
-5. **[Simple Features](#component-5-simple-features)** - Basic filter operators and actions
-6. **[Advanced Features](#component-6-advanced-features)** - Jsonnet programming, reusable patterns, and complex workflows
+3. **[Email Analysis & Auto-Suggestion](#component-3-email-analysis--auto-suggestion)** - Using forked gmailctl to analyze patterns and suggest filters (NEW)
+4. **[Filter Design](#component-4-filter-design)** - Creating and validating filter rules
+5. **[Deployment](#component-5-deployment)** - Applying changes safely with deployment mode choice
+6. **[Simple Features](#component-6-simple-features)** - Basic filter operators and actions
+7. **[Advanced Features](#component-7-advanced-features)** - Jsonnet programming, reusable patterns, and complex workflows
 
 ## Reference Files Guide
 
@@ -224,7 +226,220 @@ If user mentions "Inbox Zero" or wants comprehensive email organization strategy
 
 ---
 
-## Component 3: Filter Design
+## Component 3: Email Analysis & Auto-Suggestion
+
+### When to Use This Component
+- User wants automated filter suggestions based on actual email patterns
+- User has large volume of emails and doesn't know where to start
+- User wants data-driven Inbox Zero implementation
+- User asks "What filters should I create?"
+
+### Enhanced Fork with Analysis
+
+This skill includes a **forked version of gmailctl** located in `gmailctl-fork/` that adds email metadata analysis capabilities.
+
+**Key additions:**
+1. **Gmail metadata scope** - Reads email headers without accessing full content
+2. **`analyze` command** - Examines recent emails and suggests filters
+3. **Pattern detection** - Identifies newsletters, notifications, receipts, bulk
+4. **Inbox Zero suggestions** - Generates rules following Inbox Zero principles
+
+### Installation
+
+**For users new to this fork:**
+
+```bash
+cd gmailctl-fork
+./install.sh
+```
+
+This builds and installs `gmailctl-analyze` to `/usr/local/bin/`.
+
+**OAuth setup requirements:**
+When creating OAuth credentials, you must add an additional scope:
+- `https://www.googleapis.com/auth/gmail.labels` (standard)
+- `https://www.googleapis.com/auth/gmail.settings.basic` (standard)
+- **`https://www.googleapis.com/auth/gmail.metadata`** (NEW - required for analyze)
+
+**If upgrading from standard gmailctl:**
+1. Add metadata scope to OAuth consent screen
+2. Delete token: `rm ~/.gmailctl/token.json`
+3. Re-authenticate: `gmailctl-analyze init && gmailctl-analyze download`
+
+### Using the Analyze Command
+
+**Basic usage:**
+```bash
+gmailctl-analyze analyze
+```
+
+**With options:**
+```bash
+# Analyze last 60 days, max 2000 messages
+gmailctl-analyze analyze --days 60 --max 2000
+
+# Save suggestions to file
+gmailctl-analyze analyze --output suggestions.txt
+```
+
+**What it does:**
+1. Fetches recent email metadata (respects privacy - no content access)
+2. Extracts patterns: sender domains, subject keywords, list IDs
+3. Groups similar emails (minimum 5 occurrences to suggest)
+4. Categorizes into: Newsletter, Notification, Receipt, Bulk
+5. Generates Jsonnet filter rules with appropriate actions
+
+**Example output:**
+```
+=== Suggested Filters (based on Inbox Zero principles) ===
+
+Found 15 patterns to consider:
+
+## Newsletter (5 items)
+
+- Auto-archive newsletters from substack.com (found 47)
+  Filter: { query: "list:newsletter@substack.com" }
+  Actions: { archive: true, markRead: true, markImportant: false }
+
+## Notification (4 items)
+
+- Auto-label notifications from github.com (found 156)
+  Filter: { query: "from:@github.com" }
+  Actions: { archive: true, markRead: true, markSpam: false }
+
+...
+```
+
+### Workflow: Analysis to Filters
+
+**Step 1: Run analysis**
+```bash
+gmailctl-analyze analyze --days 30 --max 1000
+```
+
+**Step 2: Review suggestions**
+- Examine the output
+- Identify patterns you want to automate
+- Note any false positives (e.g., important emails mis-categorized)
+
+**Step 3: Customize rules**
+Edit suggested rules to fit your workflow:
+- Add label names: `labels: ["Newsletters"]`
+- Adjust actions: Change `markRead: true` to `markRead: false` if you want to review
+- Refine queries: Add exclusions like `-from:vip@example.com`
+
+**Step 4: Add to config**
+Copy selected rules into `~/.gmailctl/config.jsonnet`:
+
+```jsonnet
+{
+  version: "v1alpha3",
+
+  labels: [
+    { name: "Newsletters" },
+    { name: "Notifications" },
+    { name: "Reference/Receipts" }
+  ],
+
+  rules: [
+    // From analyze output - customize as needed
+    {
+      filter: { query: "list:newsletter@substack.com" },
+      actions: {
+        archive: true,
+        markRead: true,
+        markImportant: false,
+        labels: ["Newsletters"]
+      }
+    },
+    {
+      filter: { query: "from:@github.com -mentions:me" },
+      actions: {
+        archive: true,
+        markRead: true,
+        markSpam: false,
+        labels: ["Notifications"]
+      }
+    }
+  ]
+}
+```
+
+**Step 5: Preview and apply**
+```bash
+gmailctl-analyze diff
+gmailctl-analyze apply
+```
+
+### Pattern Detection Categories
+
+**Newsletter:**
+- Has `List-ID` header
+- Subject contains "newsletter"
+- **Suggested actions:** Archive, mark read, never mark important
+
+**Notification:**
+- Domain contains "notification", "noreply", "automated"
+- Subject contains "notification"
+- **Suggested actions:** Archive, mark read, prevent spam classification
+
+**Receipt:**
+- Subject contains "receipt", "invoice", "order confirmation"
+- **Suggested actions:** Archive only (keep unread for review)
+
+**Bulk:**
+- High volume from single domain (5+ occurrences)
+- Doesn't match other categories
+- **Suggested actions:** Never mark important
+
+### Tips for Using Analysis
+
+**Start conservative:**
+- Run analysis first without applying
+- Review all suggestions before implementing
+- Start with highest-volume patterns (most impact)
+
+**Iterative refinement:**
+- Apply filters in batches of 5-10
+- Monitor for 1-2 weeks
+- Adjust queries if emails are misfiled
+
+**Combine with manual filters:**
+- Use analyze for bulk patterns
+- Add manual rules for VIP senders or critical keywords
+
+**Re-run periodically:**
+- Email patterns change over time
+- Run analyze every 3-6 months
+- Update filters based on new patterns
+
+### Troubleshooting Analysis
+
+**"No significant patterns found":**
+- Increase `--days` or `--max` parameters
+- Check that emails exist in timeframe
+- Verify OAuth metadata scope is granted
+
+**Suggestions seem off:**
+- Pattern detection is heuristic-based
+- Review and customize before applying
+- Adjust categorization in config
+
+**Authentication errors:**
+- Ensure metadata scope is added to OAuth consent screen
+- Delete and recreate token if scope was added after initial auth
+
+### For More Details
+
+See `gmailctl-fork/README-FORK.md` for:
+- Complete installation instructions
+- OAuth setup with metadata scope
+- Pattern detection algorithm details
+- Contributing back to mainline gmailctl
+
+---
+
+## Component 4: Filter Design
 
 ### When to Use This Component
 - Creating new filters based on user requirements
@@ -335,7 +550,7 @@ scripts/validate_config.sh
 
 ---
 
-## Component 4: Deployment
+## Component 5: Deployment
 
 ### When to Use This Component
 - After designing and validating filters
@@ -432,7 +647,7 @@ gmailctl apply
 
 ---
 
-## Component 5: Simple Features
+## Component 6: Simple Features
 
 ### When to Use This Component
 - User is new to gmailctl
@@ -551,7 +766,7 @@ actions: {
 
 ---
 
-## Component 6: Advanced Features
+## Component 7: Advanced Features
 
 ### When to Use This Component
 - User has complex filtering needs

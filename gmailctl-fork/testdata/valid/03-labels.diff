@@ -1,0 +1,135 @@
+Filters:
+--- Current
++++ TO BE APPLIED
+@@ -7,28 +7,26 @@
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+ * Criteria:
+     query: list:maillist@google.com
+   Actions:
+-    apply label: maillist
++    never mark as important
+ 
+ * Criteria:
+     query: "something in the body"
+   Actions:
+     archive
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+ * Criteria:
+     query: replyto:replyer@gmail.com
+   Actions:
+@@ -36,11 +34,10 @@
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+ * Criteria:
+     query: bcc:bccer@gmail.com
+   Actions:
+@@ -48,11 +45,10 @@
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+ * Criteria:
+     from: someone@gmail.com
+   Actions:
+@@ -60,11 +56,10 @@
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+ * Criteria:
+     query: is:muted
+   Actions:
+@@ -72,11 +67,10 @@
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+ * Criteria:
+     to: someone-else@gmail.com
+   Actions:
+@@ -84,45 +78,7 @@
+     mark as important
+     never mark as spam
+     mark as read
+     star
+     categorize as: social
+-    apply label: maillist
+     forward to: forward-address@gmail.com
+ 
+-* Criteria:
+-    query: replyto:replyer@gmail.com
+-  Actions:
+-    apply label: label2
+-
+-* Criteria:
+-    query: bcc:bccer@gmail.com
+-  Actions:
+-    apply label: label2
+-
+-* Criteria:
+-    from: someone@gmail.com
+-  Actions:
+-    apply label: label2
+-
+-* Criteria:
+-    to: someone-else@gmail.com
+-  Actions:
+-    apply label: label2
+-
+-* Criteria:
+-    query: 
+-      cc:peeker@yahoo.com
+-      -subject:"a subject"
+-  Actions:
+-    apply label: label2
+-
+-* Criteria:
+-    query: "something in the body"
+-  Actions:
+-    apply label: label2
+-
+-* Criteria:
+-    query: is:muted
+-  Actions:
+-    apply label: label2
+-
+
+Labels:
+--- Current
++++ TO BE APPLIED
+@@ -1 +1,2 @@
+-maillist
++label3
++label4; color: white, black
